@@ -2,6 +2,7 @@ const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = [{
+  mode:"production",
   entry: './src/index.ts',
   devtool: 'eval-source-map',
   output: {
@@ -14,5 +15,5 @@ module.exports = [{
   },
   module: {
     rules: [{ test: /\.ts$/, loader: 'ts-loader' }],
-  },
+  }
 }];
