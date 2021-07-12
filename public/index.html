@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      pre {
+        outline: 1px solid #ccc;
+        padding: 5px;
+        margin: 5px;
+      }
+
+      .string {
+        color: green;
+      }
+
+      .number {
+        color: darkorange;
+      }
+
+      .boolean {
+        color: blue;
+      }
+
+      .null {
+        color: magenta;
+      }
+
+      .key {
+        color: red;
+      }
+    </style>
+
+    <title>Test Websocket</title>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-light bg-light border-bottom">
+      <h3>Websocket</h3>
+    </nav>
+    <div class="container pt-4">
+      <div class="row" id="start-btns">
+        <div class="col-12">
+          <button type="button" class="btn btn-primary" onclick="send()">
+            send test message
+          </button>
+          <video
+            id="local-video"
+            style="background-color: black"
+            width="320"
+            height="240"
+          ></video>
+        </div>
+      </div>
+
+     <script type="text/javascript" src="baajs.min.js"></script>>
+  
+    <script>
+      var localVideo = document.getElementById("local-video");
+      var ws = new baa.Socket("ws://localhost:9093/websocket");
+      ws.onConnect = function(){
+         var peer = new baa.Peer(ws);
+         navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function(stream) {
+           stream.getTracks().forEach(track => peer.addTrack(track, stream));
+            localVideo.srcObject = stream;
+            localVideo.autoplay = true;
+            peer.offer();
+         }).catch(function(err){
+           alert(err);
+         })
+      };
+      // var peer = new baa.Peer("ws://localhost:9093/websocket");
+      // peer.OnConnect(function(){
+      
+      //   setTimeout(function(){
+      //     peer.handshake();
+      //   }, 1000);
+      // });
+
+
+      function send() {
+        
+      }
+    </script>
+  </body>
+</html>
