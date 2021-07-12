@@ -1,0 +1,24 @@
+{
+  "name": "baajs",
+  "version": "1.0.0",
+  "description": "baa sdk js",
+  "main": "index.ts",
+  "scripts": {
+    "test": "dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doublemo/baajs.git"
+  },
+  "keywords": [
+    "baa",
+    "baasdk",
+    "webrtc"
+  ],
+  "author": "Randy Ma <435420057@qq.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/doublemo/baajs/issues"
+  },
+  "homepage": "https://github.com/doublemo/baajs#readme"
+}
