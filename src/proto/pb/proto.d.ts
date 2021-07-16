@@ -455,6 +455,9 @@ export namespace pb {
 
                 /** Request PeerId */
                 PeerId?: (string|null);
+
+                /** Request Description */
+                Description?: (Uint8Array|null);
             }
 
             /** Represents a Request. */
@@ -471,6 +474,9 @@ export namespace pb {
 
                 /** Request PeerId. */
                 public PeerId: string;
+
+                /** Request Description. */
+                public Description: Uint8Array;
 
                 /**
                  * Creates a new Request instance using the specified properties.
@@ -548,6 +554,9 @@ export namespace pb {
 
                 /** Reply Ok */
                 Ok?: (boolean|null);
+
+                /** Reply Description */
+                Description?: (Uint8Array|null);
             }
 
             /** Represents a Reply. */
@@ -561,6 +570,9 @@ export namespace pb {
 
                 /** Reply Ok. */
                 public Ok: boolean;
+
+                /** Reply Description. */
+                public Description: Uint8Array;
 
                 /**
                  * Creates a new Reply instance using the specified properties.

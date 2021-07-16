@@ -939,6 +939,7 @@ $root.pb = (function() {
                  * @interface IRequest
                  * @property {string|null} [SessionId] Request SessionId
                  * @property {string|null} [PeerId] Request PeerId
+                 * @property {Uint8Array|null} [Description] Request Description
                  */
 
                 /**
@@ -973,6 +974,14 @@ $root.pb = (function() {
                 Request.prototype.PeerId = "";
 
                 /**
+                 * Request Description.
+                 * @member {Uint8Array} Description
+                 * @memberof pb.SFU.Subscribe.Request
+                 * @instance
+                 */
+                Request.prototype.Description = $util.newBuffer([]);
+
+                /**
                  * Creates a new Request instance using the specified properties.
                  * @function create
                  * @memberof pb.SFU.Subscribe.Request
@@ -1000,6 +1009,8 @@ $root.pb = (function() {
                         writer.uint32(/* id 1, wireType 2 =*/10).string(message.SessionId);
                     if (message.PeerId != null && Object.hasOwnProperty.call(message, "PeerId"))
                         writer.uint32(/* id 2, wireType 2 =*/18).string(message.PeerId);
+                    if (message.Description != null && Object.hasOwnProperty.call(message, "Description"))
+                        writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.Description);
                     return writer;
                 };
 
@@ -1039,6 +1050,9 @@ $root.pb = (function() {
                             break;
                         case 2:
                             message.PeerId = reader.string();
+                            break;
+                        case 3:
+                            message.Description = reader.bytes();
                             break;
                         default:
                             reader.skipType(tag & 7);
@@ -1081,6 +1095,9 @@ $root.pb = (function() {
                     if (message.PeerId != null && message.hasOwnProperty("PeerId"))
                         if (!$util.isString(message.PeerId))
                             return "PeerId: string expected";
+                    if (message.Description != null && message.hasOwnProperty("Description"))
+                        if (!(message.Description && typeof message.Description.length === "number" || $util.isString(message.Description)))
+                            return "Description: buffer expected";
                     return null;
                 };
 
@@ -1100,6 +1117,11 @@ $root.pb = (function() {
                         message.SessionId = String(object.SessionId);
                     if (object.PeerId != null)
                         message.PeerId = String(object.PeerId);
+                    if (object.Description != null)
+                        if (typeof object.Description === "string")
+                            $util.base64.decode(object.Description, message.Description = $util.newBuffer($util.base64.length(object.Description)), 0);
+                        else if (object.Description.length)
+                            message.Description = object.Description;
                     return message;
                 };
 
@@ -1119,11 +1141,20 @@ $root.pb = (function() {
                     if (options.defaults) {
                         object.SessionId = "";
                         object.PeerId = "";
+                        if (options.bytes === String)
+                            object.Description = "";
+                        else {
+                            object.Description = [];
+                            if (options.bytes !== Array)
+                                object.Description = $util.newBuffer(object.Description);
+                        }
                     }
                     if (message.SessionId != null && message.hasOwnProperty("SessionId"))
                         object.SessionId = message.SessionId;
                     if (message.PeerId != null && message.hasOwnProperty("PeerId"))
                         object.PeerId = message.PeerId;
+                    if (message.Description != null && message.hasOwnProperty("Description"))
+                        object.Description = options.bytes === String ? $util.base64.encode(message.Description, 0, message.Description.length) : options.bytes === Array ? Array.prototype.slice.call(message.Description) : message.Description;
                     return object;
                 };
 
@@ -1148,6 +1179,7 @@ $root.pb = (function() {
                  * @memberof pb.SFU.Subscribe
                  * @interface IReply
                  * @property {boolean|null} [Ok] Reply Ok
+                 * @property {Uint8Array|null} [Description] Reply Description
                  */
 
                 /**
@@ -1172,6 +1204,14 @@ $root.pb = (function() {
                  * @instance
                  */
                 Reply.prototype.Ok = false;
+
+                /**
+                 * Reply Description.
+                 * @member {Uint8Array} Description
+                 * @memberof pb.SFU.Subscribe.Reply
+                 * @instance
+                 */
+                Reply.prototype.Description = $util.newBuffer([]);
 
                 /**
                  * Creates a new Reply instance using the specified properties.
@@ -1199,6 +1239,8 @@ $root.pb = (function() {
                         writer = $Writer.create();
                     if (message.Ok != null && Object.hasOwnProperty.call(message, "Ok"))
                         writer.uint32(/* id 1, wireType 0 =*/8).bool(message.Ok);
+                    if (message.Description != null && Object.hasOwnProperty.call(message, "Description"))
+                        writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.Description);
                     return writer;
                 };
 
@@ -1235,6 +1277,9 @@ $root.pb = (function() {
                         switch (tag >>> 3) {
                         case 1:
                             message.Ok = reader.bool();
+                            break;
+                        case 2:
+                            message.Description = reader.bytes();
                             break;
                         default:
                             reader.skipType(tag & 7);
@@ -1274,6 +1319,9 @@ $root.pb = (function() {
                     if (message.Ok != null && message.hasOwnProperty("Ok"))
                         if (typeof message.Ok !== "boolean")
                             return "Ok: boolean expected";
+                    if (message.Description != null && message.hasOwnProperty("Description"))
+                        if (!(message.Description && typeof message.Description.length === "number" || $util.isString(message.Description)))
+                            return "Description: buffer expected";
                     return null;
                 };
 
@@ -1291,6 +1339,11 @@ $root.pb = (function() {
                     var message = new $root.pb.SFU.Subscribe.Reply();
                     if (object.Ok != null)
                         message.Ok = Boolean(object.Ok);
+                    if (object.Description != null)
+                        if (typeof object.Description === "string")
+                            $util.base64.decode(object.Description, message.Description = $util.newBuffer($util.base64.length(object.Description)), 0);
+                        else if (object.Description.length)
+                            message.Description = object.Description;
                     return message;
                 };
 
@@ -1307,10 +1360,20 @@ $root.pb = (function() {
                     if (!options)
                         options = {};
                     var object = {};
-                    if (options.defaults)
+                    if (options.defaults) {
                         object.Ok = false;
+                        if (options.bytes === String)
+                            object.Description = "";
+                        else {
+                            object.Description = [];
+                            if (options.bytes !== Array)
+                                object.Description = $util.newBuffer(object.Description);
+                        }
+                    }
                     if (message.Ok != null && message.hasOwnProperty("Ok"))
                         object.Ok = message.Ok;
+                    if (message.Description != null && message.hasOwnProperty("Description"))
+                        object.Description = options.bytes === String ? $util.base64.encode(message.Description, 0, message.Description.length) : options.bytes === Array ? Array.prototype.slice.call(message.Description) : message.Description;
                     return object;
                 };
 

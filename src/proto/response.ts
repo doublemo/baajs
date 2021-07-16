@@ -17,6 +17,10 @@ class ResponseBytes implements Response {
         this.content = new ArrayBuffer(0);
     }
 
+    getSeqNo():number {
+        return this.seqNo;
+    }
+
     unmarshal(data:ArrayBuffer):boolean {
         let buffer:ReadBuffer = new ReadBuffer(data);
         this.code = buffer.readInt16();

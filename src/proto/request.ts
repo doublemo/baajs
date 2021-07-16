@@ -15,6 +15,10 @@ class RequestBytes implements Request{
         this.content = new ArrayBuffer(0);
     }
 
+    setSeqNo(i:number):void {
+        this.seqNo = i;
+    }
+
     marshal():ArrayBuffer{
         if (this.content == undefined) {
             this.content = new ArrayBuffer(0);

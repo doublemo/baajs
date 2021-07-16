@@ -1,8 +1,12 @@
 import { Request } from "./request";
 import { Response } from "./response";
+import { EventEmitter } from 'events';
 
 interface Conn {
-    send(evt:Request):void;
+    send(evt:Request):number;
+    isConnected():boolean;
+    events():EventEmitter;
+    eventNameBySeqNo(seqno:number):string;
 }
 
 interface MessageProcessor {
@@ -32,10 +36,12 @@ class Mws {
         if(this.mws.length == 0) {
             return last;
         }
-
-        let h = this.mws[this.mws.length - 1](last);
-        for(var i = this.mws.length - 2; i >= 0; i--){
-            h = this.mws[i](h)
+       
+        let h = this.mws[0](last);
+        if(this.mws.length > 1) {
+            for(var i = 1; i < this.mws.length; i++){
+                h = this.mws[i](h)
+            }
         }
         return h
     }

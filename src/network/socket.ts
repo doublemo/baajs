@@ -5,29 +5,33 @@ import { pb } from '../proto/pb/proto';
 import { Command } from '../proto/command';
 import { Request }  from '../proto/request';
 import { Response, ResponseBytes }  from '../proto/response';
-import {ReadBuffer}  from '../bytes/readbuffer';
+import { ReadBuffer }  from '../bytes/readbuffer';
+import { EventEmitter } from 'events';
+import { Conn, Middleware, MessageProcessor, MessageProcess, Mws, MessageProcessorArgs }  from './conn';
 
-import { Middleware, MessageProcessor, MessageProcess, Mws, MessageProcessorArgs }  from './conn';
 
-
-class Socket {
+class Socket implements Conn {
     protected ws:WebSocket;
     private seqNo:number;
+    private event:EventEmitter;
     private receiveMiddlewares:Array<(next:MessageProcessor) => MessageProcessor>;
     private writeMiddlewares:Array<(next:MessageProcessor) => MessageProcessor>;
-    public onConnect?:() => void;
-    public onMessage?:(evt:Response | undefined, payload:ArrayBuffer | undefined) => void;
-    public onError?:(evt:any) => void;
-    public onClose?:() => void;
+    onConnect?:() => void;
+    onMessage?:(evt:Response | undefined, payload:ArrayBuffer | undefined) => void;
+    onError?:(evt:any) => void;
+    onClose?:() => void;
+    connected:boolean;
 
     constructor(url:string) {
         this.seqNo = 0;
+        this.connected = false;
         this.receiveMiddlewares = [];
         this.writeMiddlewares = [];
+        this.event = new EventEmitter();
         this.ws = new WebSocket(url);
         this.ws.binaryType = "arraybuffer";
         this.ws.addEventListener("open", () => {
-            // 握手
+            this.connected = true;
             if(this.onConnect) this.onConnect();
         });
 
@@ -37,6 +41,10 @@ class Socket {
             let m = new MessageProcess();
             m.onProcess = (args:MessageProcessorArgs) => {
                 console.log("recv message: len = ", args.payload, args.response);
+                if(args.response){
+                    this.event.emit(this.eventNameBySeqNo(args.response.getSeqNo()), args.response);
+                }
+
                 if(this.onMessage) {
                     this.onMessage(args.response, args.payload);
                 }
@@ -72,9 +80,11 @@ class Socket {
         }
     }
 
-    send(req:Request):void {
+    send(req:Request):number {
+        req.setSeqNo(++this.seqNo);
         let args = new MessageProcessorArgs();
         args.request = req;
+        args.payload = req.marshal();
         let m = new MessageProcess();
         m.onProcess = (args:MessageProcessorArgs) => {
             if(args.payload) {
@@ -90,10 +100,19 @@ class Socket {
         let mws = new Mws(this.writeMiddlewares);
         let pr = mws.process(m);
         pr.process(args);
+        return this.seqNo;
     }
 
-    async handshake() {
+    isConnected():boolean {
+        return this.connected;
+    }
 
+    events():EventEmitter {
+        return this.event;
+    }
+
+    eventNameBySeqNo(seqno:number):string {
+        return "seqno_"+seqno.toString();
     }
 }
 

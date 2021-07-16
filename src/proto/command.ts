@@ -9,7 +9,8 @@ const Command = {
     SFU:{
         Command:2,
         SubCommand:{
-            NegotiateCommand:1
+            NegotiateCommand:1,
+            JoinCommand:2
         }
     }
 }
