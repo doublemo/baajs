@@ -73,22 +73,34 @@
             width="320"
             height="240"
           ></video>
+
+          <p>
+          <audio style="background-color: black" id="remote-audio">您的浏览器不支持 audio 标签。</audio>
+          </p>
         </div>
       </div>
      <script src="/baajs.min.js" type="text/javascript"> </script>
      <script> 
       var localVideo = document.getElementById("local-video");
       var remoteVideo = document.getElementById("remote-video");
+      var remoteAudio = document.getElementById("remote-audio");
       var ws = new baa.Socket("ws://localhost:9093/websocket");
       ws.use(new baa.BytesMiddleware());
 
       // new peer
       var peer = new baa.Peer(ws);
       peer.ontrack = function(track, stream){
+        console.log("track.kind:", track.kind);
         if(track.kind == "video") {
           remoteVideo.srcObject = stream;
           remoteVideo.autoplay = true;
+          remoteVideo.controls = true;
           console.log("ojjjjj");
+        } else if(track.kind == "audio") {
+          console.log("audio start");
+          remoteAudio.srcObject = stream;
+          remoteAudio.autoplay = true;
+          remoteAudio.controls = true;
         }
       }
 
