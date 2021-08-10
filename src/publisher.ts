@@ -121,7 +121,7 @@ export class Publisher {
 
         let frame = new pb.SFU.Signal.Request();
         frame.Payload = "trickle";
-        frame.trickle = new pb.SFU.Trickle({Target:pb.SFU.Target.PUBLISHER, Candidate:JSON.stringify(candidate)});
+        frame.trickle = new pb.SFU.Trickle({Target:pb.SFU.Target.PUBLISHER, Candidate:JSON.stringify(candidate.candidate)});
         let req = new RequestBytes();
         req.command = Command.SFU.Command;
         req.subCommand = Command.SFU.SubCommand.NegotiateCommand;

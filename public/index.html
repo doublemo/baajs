@@ -112,7 +112,7 @@
           }
       }
 
-
+      var channel;
       ws.onConnect = function() {
            // init rc4
            var rc4 = new baa.Rc4Middleware();
@@ -126,6 +126,8 @@
            req.content = rc4.handshake();
            ws.send(req);
 
+           
+
            setTimeout(async () =>  {
             await peer.join();
            }, 1000);
@@ -133,8 +135,9 @@
 
       ws.onMessage = peer.onMessage();
 
-      var channel;
+      
       function send() {
+        channel = peer.createDataChannel("tesok");
         baa.LocalStream.getUserMedia({
             resolution: "hd",
             simulcast: false,
@@ -146,7 +149,6 @@
             localVideo.autoplay = true;
             peer.publish(stream);
         }).catch(console.error);
-        channel = peer.createDataChannel("tesok");
       }
 
       function send2() {
